@@ -116,3 +116,22 @@ module "automation_account_runbook" {
   }
 }
 
+module "automation_account_powershellworkflow" {
+  # https://{PAT}@dev.azure.com/{organization}/{project}/_git/{repo-name}
+  source = "github.com/ParisaMousavi/az-auto-runbook?ref=main"
+  depends_on = [
+    module.automation_account
+  ]
+  resource_group_name     = module.resourcegroup.name
+  location                = module.resourcegroup.location
+  name                    = "MyFirstPSWorkflow"
+  automation_account_name = module.automation_account.name
+  description             = "This is an example PowerShellWorkflow runbook"
+  runbook_type            = "PowerShellWorkflow"
+  content                 = templatefile("${path.module}/powershellworkflow/script.ps1", {"RUNBOOK_NAME"= "MyFirstPSWorkflow"})
+  # publish_content_link = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/c4935ffb69246a6058eb24f54640f53f69d3ac9f/101-automation-runbook-getvms/Runbooks/Get-AzureVMTutorial.ps1"
+  additional_tags = {
+    CostCenter = "ABC000CBA"
+    By         = "parisamoosavinezhad@hotmail.com"
+  }
+}
