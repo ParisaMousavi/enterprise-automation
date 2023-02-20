@@ -17,20 +17,6 @@ $moduleVersion = "1.0"
 # # If you have multiple subscriptions, set the one to use
 # # Select-AzSubscription -SubscriptionId "<SUBSCRIPTIONID>"
 
-
-$TenantId="0f912e8a-5f68-43ec-9075-1533aaa80442"
-$Subscription="e75710b2-d656-4ee7-bc64-d1b371656208"
-
-[string]$userName = '07cea789-5bb0-4381-9255-17b9f6909aad'
-[string]$userPassword = 'iSS8Q~qOOnhto4Of.hyqoI5B5c9iceNZl6WdzdmF'
-
-# Convert to SecureString
-[securestring]$secStringPassword = ConvertTo-SecureString $userPassword -AsPlainText -Force
-
-[pscredential]$Credential = New-Object System.Management.Automation.PSCredential ($userName, $secStringPassword)
-Connect-AzAccount -ServicePrincipal -TenantId $TenantId -Credential $Credential -Subscription $Subscription
-
-
 # Install AzAutomation
 # Install-Module -Name Az.Automation
 # Install nx module

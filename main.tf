@@ -273,27 +273,7 @@ resource "azurerm_automation_dsc_configuration" "TestConfig" {
   resource_group_name     = module.resourcegroup.name
   automation_account_name = module.automation_account.name
   location                = module.resourcegroup.location
-  # content_embedded        = templatefile("${path.module}/dsc-configuration/TestConfig-t.ps1", {"DSC_NAME" = "TestConfig"})
-  content_embedded = <<BODY
-configuration TestConfig 
-{ 
-    Node IsWebServer
-    {
-        WindowsFeature IIS {
-            Ensure               = 'Present'
-            Name                 = 'Web-Server'
-            IncludeAllSubFeature = $true
-        }
-    }
-    Node NotWebServer
-    {
-        WindowsFeature IIS {
-            Ensure = 'Absent'
-            Name   = 'Web-Server'
-        }
-    }
-}
-BODY
+  content_embedded        = templatefile("${path.module}/dsc-configuration/TestConfig-t.ps1", {"DSC_NAME" = "TestConfig"})
   log_verbose      = true
   description      = "description TestConfig"
 }
