@@ -5,7 +5,7 @@ variable "location" {
 
 variable "prefix" {
   type    = string
-  default = "sol"
+  default = "sola"
 }
 
 variable "stage" {

@@ -6,3 +6,7 @@ git remote set-url --add --push origin https://github.com/ParisaMousavi/enterpri
 ```
 ---
 ![Architecture of the Terraform solution](https://github.com/ParisaMousavi/wordpress/blob/main/img/az-automation.drawio.png)
+
+---
+**Related links**
+- https://github.com/niveklabs/azurerm/tree/master/r
