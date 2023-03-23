@@ -75,143 +75,143 @@ module "automation_account" {
   }
 }
 
-# The same role for the automation account
-# to allow them to stop and start a virtual machine
-# https://learn.microsoft.com/en-us/azure/automation/learn/powershell-runbook-managed-identity#assign-permissions-to-managed-identities
-resource "azurerm_role_assignment" "automation_account_role_1" {
-  principal_id         = module.automation_account.principal_id
-  scope                = module.resourcegroup.id
-  role_definition_name = "DevTest Labs User"
-  depends_on = [
-    module.automation_account
-  ]
-}
+# # The same role for the automation account
+# # to allow them to stop and start a virtual machine
+# # https://learn.microsoft.com/en-us/azure/automation/learn/powershell-runbook-managed-identity#assign-permissions-to-managed-identities
+# resource "azurerm_role_assignment" "automation_account_role_1" {
+#   principal_id         = module.automation_account.principal_id
+#   scope                = module.resourcegroup.id
+#   role_definition_name = "DevTest Labs User"
+#   depends_on = [
+#     module.automation_account
+#   ]
+# }
 
-resource "azurerm_role_assignment" "automation_account_role_2" {
-  principal_id         = module.automation_account.principal_id
-  scope                = module.resourcegroup.id
-  role_definition_name = "Reader"
-  depends_on = [
-    module.automation_account
-  ]
-}
+# resource "azurerm_role_assignment" "automation_account_role_2" {
+#   principal_id         = module.automation_account.principal_id
+#   scope                = module.resourcegroup.id
+#   role_definition_name = "Reader"
+#   depends_on = [
+#     module.automation_account
+#   ]
+# }
 
-module "automation_account_runbook" {
-  # https://{PAT}@dev.azure.com/{organization}/{project}/_git/{repo-name}
-  source = "github.com/ParisaMousavi/az-auto-runbook?ref=main"
-  depends_on = [
-    module.automation_account
-  ]
-  resource_group_name     = module.resourcegroup.name
-  location                = module.resourcegroup.location
-  name                    = "AzureVMTutorial"
-  automation_account_name = module.automation_account.name
-  description             = "This is an example runbook"
-  runbook_type            = "PowerShell"
-  content                 = templatefile("${path.module}/powershell/start-stop-vms.ps1", { "AUTOMATION_ACCOUNT_NAME" = module.automation_account.name })
-  # publish_content_link = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/c4935ffb69246a6058eb24f54640f53f69d3ac9f/101-automation-runbook-getvms/Runbooks/Get-AzureVMTutorial.ps1"
-  additional_tags = {
-    CostCenter = "ABC000CBA"
-    By         = "parisamoosavinezhad@hotmail.com"
-  }
-}
+# module "automation_account_runbook" {
+#   # https://{PAT}@dev.azure.com/{organization}/{project}/_git/{repo-name}
+#   source = "github.com/ParisaMousavi/az-auto-runbook?ref=main"
+#   depends_on = [
+#     module.automation_account
+#   ]
+#   resource_group_name     = module.resourcegroup.name
+#   location                = module.resourcegroup.location
+#   name                    = "AzureVMTutorial"
+#   automation_account_name = module.automation_account.name
+#   description             = "This is an example runbook"
+#   runbook_type            = "PowerShell"
+#   content                 = templatefile("${path.module}/powershell/start-stop-vms.ps1", { "AUTOMATION_ACCOUNT_NAME" = module.automation_account.name })
+#   # publish_content_link = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/c4935ffb69246a6058eb24f54640f53f69d3ac9f/101-automation-runbook-getvms/Runbooks/Get-AzureVMTutorial.ps1"
+#   additional_tags = {
+#     CostCenter = "ABC000CBA"
+#     By         = "parisamoosavinezhad@hotmail.com"
+#   }
+# }
 
-module "automation_account_powershellworkflow" {
-  # https://{PAT}@dev.azure.com/{organization}/{project}/_git/{repo-name}
-  source = "github.com/ParisaMousavi/az-auto-runbook?ref=main"
-  depends_on = [
-    module.automation_account
-  ]
-  resource_group_name     = module.resourcegroup.name
-  location                = module.resourcegroup.location
-  name                    = "MyFirstPSWorkflow"
-  automation_account_name = module.automation_account.name
-  description             = "This is an example PowerShellWorkflow runbook"
-  runbook_type            = "PowerShellWorkflow"
-  content                 = templatefile("${path.module}/powershellworkflow/script.ps1", { "RUNBOOK_NAME" = "MyFirstPSWorkflow" })
-  # publish_content_link = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/c4935ffb69246a6058eb24f54640f53f69d3ac9f/101-automation-runbook-getvms/Runbooks/Get-AzureVMTutorial.ps1"
-  additional_tags = {
-    CostCenter = "ABC000CBA"
-    By         = "parisamoosavinezhad@hotmail.com"
-  }
-}
+# module "automation_account_powershellworkflow" {
+#   # https://{PAT}@dev.azure.com/{organization}/{project}/_git/{repo-name}
+#   source = "github.com/ParisaMousavi/az-auto-runbook?ref=main"
+#   depends_on = [
+#     module.automation_account
+#   ]
+#   resource_group_name     = module.resourcegroup.name
+#   location                = module.resourcegroup.location
+#   name                    = "MyFirstPSWorkflow"
+#   automation_account_name = module.automation_account.name
+#   description             = "This is an example PowerShellWorkflow runbook"
+#   runbook_type            = "PowerShellWorkflow"
+#   content                 = templatefile("${path.module}/powershellworkflow/script.ps1", { "RUNBOOK_NAME" = "MyFirstPSWorkflow" })
+#   # publish_content_link = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/c4935ffb69246a6058eb24f54640f53f69d3ac9f/101-automation-runbook-getvms/Runbooks/Get-AzureVMTutorial.ps1"
+#   additional_tags = {
+#     CostCenter = "ABC000CBA"
+#     By         = "parisamoosavinezhad@hotmail.com"
+#   }
+# }
 
-module "automation_account_powershellworkflow_2" {
-  # https://{PAT}@dev.azure.com/{organization}/{project}/_git/{repo-name}
-  source = "github.com/ParisaMousavi/az-auto-runbook?ref=main"
-  depends_on = [
-    module.automation_account
-  ]
-  resource_group_name     = module.resourcegroup.name
-  location                = module.resourcegroup.location
-  name                    = "MyFirstPSWorkflow_2"
-  automation_account_name = module.automation_account.name
-  description             = "This is an example PowerShellWorkflow runbook"
-  runbook_type            = "PowerShellWorkflow"
-  content                 = templatefile("${path.module}/powershellworkflow/script2.ps1", { "RUNBOOK_NAME" = "MyFirstPSWorkflow_2" })
-  # publish_content_link = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/c4935ffb69246a6058eb24f54640f53f69d3ac9f/101-automation-runbook-getvms/Runbooks/Get-AzureVMTutorial.ps1"
-  additional_tags = {
-    CostCenter = "ABC000CBA"
-    By         = "parisamoosavinezhad@hotmail.com"
-  }
-}
+# module "automation_account_powershellworkflow_2" {
+#   # https://{PAT}@dev.azure.com/{organization}/{project}/_git/{repo-name}
+#   source = "github.com/ParisaMousavi/az-auto-runbook?ref=main"
+#   depends_on = [
+#     module.automation_account
+#   ]
+#   resource_group_name     = module.resourcegroup.name
+#   location                = module.resourcegroup.location
+#   name                    = "MyFirstPSWorkflow_2"
+#   automation_account_name = module.automation_account.name
+#   description             = "This is an example PowerShellWorkflow runbook"
+#   runbook_type            = "PowerShellWorkflow"
+#   content                 = templatefile("${path.module}/powershellworkflow/script2.ps1", { "RUNBOOK_NAME" = "MyFirstPSWorkflow_2" })
+#   # publish_content_link = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/c4935ffb69246a6058eb24f54640f53f69d3ac9f/101-automation-runbook-getvms/Runbooks/Get-AzureVMTutorial.ps1"
+#   additional_tags = {
+#     CostCenter = "ABC000CBA"
+#     By         = "parisamoosavinezhad@hotmail.com"
+#   }
+# }
 
-resource "azurerm_network_interface" "this" {
-  name                = "${var.name}-nic"
-  location            = module.resourcegroup.location
-  resource_group_name = module.resourcegroup.name
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = data.terraform_remote_state.network.outputs.subnets["vm-linux"].id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.this.id
-  }
-}
+# resource "azurerm_network_interface" "this" {
+#   name                = "${var.name}-nic"
+#   location            = module.resourcegroup.location
+#   resource_group_name = module.resourcegroup.name
+#   ip_configuration {
+#     name                          = "internal"
+#     subnet_id                     = data.terraform_remote_state.network.outputs.subnets["vm-linux"].id
+#     private_ip_address_allocation = "Dynamic"
+#     public_ip_address_id          = azurerm_public_ip.this.id
+#   }
+# }
 
-resource "azurerm_public_ip" "this" {
-  name                = "${var.name}-pip"
-  location            = module.resourcegroup.location
-  resource_group_name = module.resourcegroup.name
-  allocation_method   = "Static"
+# resource "azurerm_public_ip" "this" {
+#   name                = "${var.name}-pip"
+#   location            = module.resourcegroup.location
+#   resource_group_name = module.resourcegroup.name
+#   allocation_method   = "Static"
 
-  tags = {
-    environment = "Production"
-  }
-}
+#   tags = {
+#     environment = "Production"
+#   }
+# }
 
-resource "azurerm_linux_virtual_machine" "this" {
-  name                  = "${var.name}-vm"
-  location              = module.resourcegroup.location
-  resource_group_name   = module.resourcegroup.name
-  network_interface_ids = [azurerm_network_interface.this.id]
-  size                  = "Standard_B1s"
-  admin_username        = "adminuser"
-  # admin_password                  = "P@risa2023#0"
-  disable_password_authentication = true
-  allow_extension_operations      = true
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
+# resource "azurerm_linux_virtual_machine" "this" {
+#   name                  = "${var.name}-vm"
+#   location              = module.resourcegroup.location
+#   resource_group_name   = module.resourcegroup.name
+#   network_interface_ids = [azurerm_network_interface.this.id]
+#   size                  = "Standard_B1s"
+#   admin_username        = "adminuser"
+#   # admin_password                  = "P@risa2023#0"
+#   disable_password_authentication = true
+#   allow_extension_operations      = true
+#   admin_ssh_key {
+#     username   = "adminuser"
+#     public_key = file("~/.ssh/id_rsa.pub")
+#   }
 
-  os_disk { # disk name cannot be changed after creation
-    name                 = "${var.name}-vm"
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
+#   os_disk { # disk name cannot be changed after creation
+#     name                 = "${var.name}-vm"
+#     caching              = "ReadWrite"
+#     storage_account_type = "Standard_LRS"
+#   }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
-    version   = "latest"
-  }
-}
+#   source_image_reference {
+#     publisher = "Canonical"
+#     offer     = "UbuntuServer"
+#     sku       = "16.04-LTS"
+#     version   = "latest"
+#   }
+# }
 
-resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.this.id
-  network_security_group_id = "/subscriptions/e75710b2-d656-4ee7-bc64-d1b371656208/resourceGroups/netexc-rg-projn-dev-network-weu/providers/Microsoft.Network/networkSecurityGroups/netexc-nsg-projn-dev-weu"
-}
+# resource "azurerm_network_interface_security_group_association" "example" {
+#   network_interface_id      = azurerm_network_interface.this.id
+#   network_security_group_id = data.terraform_remote_state.network.outputs.nsg_id
+# }
 
 # output "dadada" {
 #   value = file("~/.ssh/id_rsa.pub")
@@ -268,15 +268,15 @@ resource "azurerm_network_interface_security_group_association" "example" {
 #   description             = "description TestConfig"
 # }
 
-resource "azurerm_automation_dsc_configuration" "TestConfig" {
-  name                    = "TestConfig"
-  resource_group_name     = module.resourcegroup.name
-  automation_account_name = module.automation_account.name
-  location                = module.resourcegroup.location
-  content_embedded        = templatefile("${path.module}/dsc-configuration/TestConfig-t.ps1", {"DSC_NAME" = "TestConfig"})
-  log_verbose      = true
-  description      = "description TestConfig"
-}
+# resource "azurerm_automation_dsc_configuration" "TestConfig" {
+#   name                    = "TestConfig"
+#   resource_group_name     = module.resourcegroup.name
+#   automation_account_name = module.automation_account.name
+#   location                = module.resourcegroup.location
+#   content_embedded        = templatefile("${path.module}/dsc-configuration/TestConfig-t.ps1", {"DSC_NAME" = "TestConfig"})
+#   log_verbose      = true
+#   description      = "description TestConfig"
+# }
 
 # resource "null_resource" "non_interactive_call" {
 #   depends_on = [module.automation_account]
@@ -290,4 +290,58 @@ resource "azurerm_automation_dsc_configuration" "TestConfig" {
 
 # output "fdsfjshdjh" {
 #   value = filebase64("${path.module}/dsc-configuration/TestConfig.ps1")
+# }
+
+
+# resource "azurerm_network_interface" "this_win" {
+#   name                = "${var.name}-win-nic"
+#   location            = module.resourcegroup.location
+#   resource_group_name = module.resourcegroup.name
+
+#   ip_configuration {
+#     name                          = "internal"
+#     subnet_id                     = data.terraform_remote_state.network.outputs.subnets["vm-linux"].id
+#     private_ip_address_allocation = "Dynamic"
+#     public_ip_address_id          = azurerm_public_ip.this_win.id
+#   }
+# }
+
+# resource "azurerm_network_interface_security_group_association" "this_win" {
+#   network_interface_id      = azurerm_network_interface.this_win.id
+#   network_security_group_id = data.terraform_remote_state.network.outputs.nsg_id
+# }
+
+# resource "azurerm_public_ip" "this_win" {
+#   name                = "${var.name}-win-pip"
+#   location            = module.resourcegroup.location
+#   resource_group_name = module.resourcegroup.name
+#   allocation_method   = "Static"
+
+#   tags = {
+#     environment = "Production"
+#   }
+# }
+
+# resource "azurerm_windows_virtual_machine" "this_win" {
+#   name                = "${var.name}-win"
+#   location            = module.resourcegroup.location
+#   resource_group_name = module.resourcegroup.name
+#   size                = "Standard_B2s" #"Standard_F2"
+#   admin_username      = "adminuser"
+#   admin_password      = "P@$$w0rd1234!"
+#   network_interface_ids = [
+#     azurerm_network_interface.this_win.id,
+#   ]
+
+#   os_disk {
+#     caching              = "ReadWrite"
+#     storage_account_type = "Standard_LRS"
+#   }
+
+#   source_image_reference {
+#     publisher = "MicrosoftWindowsServer"
+#     offer     = "WindowsServer"
+#     sku       = "2016-Datacenter"
+#     version   = "latest"
+#   }
 # }
